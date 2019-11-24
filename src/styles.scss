@@ -2,7 +2,7 @@
 
 @import 'main-styles';
 
-@import './assets/bulma.sass';
+@import '../node_modules/bulma/bulma.sass';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
