@@ -1,0 +1,81 @@
+@import '../../main-styles.scss';
+
+.top-bar {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-height: 68px;
+    background: linear-gradient(75deg, rgb(214, 180, 247), rgb(173, 203, 231));
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+        font-family: 'Lato';
+        font-size: 18px;
+        letter-spacing: 1px;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: $dark;
+    }
+
+    .controls {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .clear-btn {
+        background-color: #dc3900;
+        color: white;
+    }
+}
+
+.total-budget-section {
+    display: flex;
+    height: 250px;
+    background: $dark;
+
+    // Horizontally and vertically center the text
+    justify-content: center;
+    align-items: center;
+
+    h2 {
+        font-family: 'Lato';
+        font-weight: 300;
+        font-size: 58px;
+        color: white;
+
+        &.green {
+            color: lighten($green, 12%);
+        }
+
+        &.red {
+            color: lighten($red, 12%);
+        }
+    }
+}
+
+.add-item-section {
+    display: flex;
+    // Horizontally and vertically center the text
+    justify-content: center;
+    align-items: center;
+
+    .add-item-container {
+        width: $width;
+    }
+}
+
+.main-footer {
+    margin-top: 300px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &.container {
+        max-width: $width;
+    }
+    .controls {
+        display: flex;
+        flex-direction: column;
+    }
+}

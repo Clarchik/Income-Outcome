@@ -1,0 +1,21 @@
+<div class="root">
+    <div class="budget-item" (click)="onItemClick(budgetItem)"
+        [ngClass]="{ 'income': budgetItem.amount >=0, 'expense': budgetItem.amount < 0 }">
+        <div class="date">
+            <strong>
+                <span class="day-name">{{ getDayByDate(budgetItem.date) }}</span>
+                <span class="day-date"> ({{ formatDate(budgetItem.date) }})</span>
+            </strong>
+        </div>
+        <div class="description-wrapper">
+            <div class="description">
+                <p>{{ budgetItem.description }}</p>
+            </div>
+            <div class="amount">
+                <p>{{ budgetItem.amount }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="x-icon-button" (click)="deleteButtonClick(budgetItem)"></div>
+</div>

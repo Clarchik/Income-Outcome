@@ -1,0 +1,31 @@
+<div class="top-bar">
+    <div class="div">
+        <h1>Budget Calculator</h1>
+    </div>
+</div>
+
+<section class="total-budget-section">
+    <h2 [ngClass]="{ 'red': !positiveBudget, 'green': positiveBudget }">{{ totalBudget }}</h2>
+</section>
+
+<section class="add-item-section">
+    <div class="add-item-container">
+        <app-add-item-form (formSubmit)="addItem($event)"></app-add-item-form>
+    </div>
+</section>
+
+<hr style="margin-top: 0">
+
+<app-budget-item-list [budgetItems]="budgetItems"></app-budget-item-list>
+<footer class="main-footer">
+    <div class="main-footer-container">
+        <div class="controls">
+            <button *ngIf="this.budgetItems.length" type="button" class="button is-info" (click)="generatePDF();">
+                Export data to PDF
+            </button>
+            <button *ngIf="this.budgetItems.length" type="button" class="button is-danger" (click)="clearAllData();">
+                Clear all data
+            </button>
+        </div>
+    </div>
+</footer>
