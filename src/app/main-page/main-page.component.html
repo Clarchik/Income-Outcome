@@ -16,9 +16,9 @@
 
 <hr style="margin-top: 0">
 
-<app-budget-item-list [budgetItems]="budgetItems"></app-budget-item-list>
+<app-budget-item-list [budgetIncomeItems]="income" [budgeOutcometItems]="outcome"></app-budget-item-list>
 <footer class="main-footer">
-    <div class="main-footer-container">
+    <!-- <div class="main-footer-container">
         <div class="controls">
             <button *ngIf="this.budgetItems.length" type="button" class="button is-info" (click)="generatePDF();">
                 Export data to PDF
@@ -27,5 +27,5 @@
                 Clear all data
             </button>
         </div>
-    </div>
+    </div> -->
 </footer>

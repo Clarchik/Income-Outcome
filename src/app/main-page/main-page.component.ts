@@ -7,6 +7,7 @@ import { BudgetService } from '../services/budget.service';
 import * as moment from 'moment';
 import * as jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import {BudgetObject} from '../../shared/models/budget-object';
 
 @Component({
     selector: 'app-main-page',
@@ -15,42 +16,68 @@ import 'jspdf-autotable';
 })
 export class MainPageComponent implements OnInit {
 
-    budgetItems: BudgetItem[] = new Array<BudgetItem>();
+    budgetItems: BudgetObject = new BudgetObject();
     totalBudget = 0;
 
     constructor(private budgetService: BudgetService) { }
 
     ngOnInit() {
-        const localItems = localStorage.getItem('budgetItems');
-        if (localItems) {
-            this.budgetItems = JSON.parse(localItems);
-            const budget = this.budgetItems.reduce((sum, item) => sum + item.amount, 0);
-            this.totalBudget = budget;
-        }
-        this.budgetService.deleteItem.subscribe(data => this.deleteItem(data));
-        this.budgetService.updateItem.subscribe(data => this.updateItem(data));
-        this.budgetService.addItem.subscribe(data => this.addItem(data));
+        this.budgetItems.INCOME = [
+            {
+                date: new Date(),
+                content: [
+                    {description: 'SSS', amount: +10},
+                    {description: 'RRR', amount: +20}
+                ]
+            }
+        ];
+        this.budgetItems.OUTCOME = [
+            {
+                date: new Date(),
+                content: [
+                    {description: 'DDD', amount: -10},
+                    {description: 'TTT', amount: -30}
+                ]
+            }
+        ];
+        // const localItems = localStorage.getItem('budgetItems');
+        // if (localItems) {
+        //     this.budgetItems = JSON.parse(localItems);
+        //     const budget = this.budgetItems.reduce((sum, item) => sum + item.content.amount, 0);
+        //     this.totalBudget = budget;
+        // }
+        // this.budgetService.deleteItem.subscribe(data => this.deleteItem(data));
+        // this.budgetService.updateItem.subscribe(data => this.updateItem(data));
+        // this.budgetService.addItem.subscribe(data => this.addItem(data));
+    }
+
+    get income() {
+        return this.budgetItems.INCOME;
+    }
+
+    get outcome() {
+        return this.budgetItems.OUTCOME;
     }
 
     addItem(newItem: BudgetItem) {
-        this.budgetItems = [...this.budgetItems, newItem];
-        this.totalBudget += newItem.amount;
-        this.save();
+        // this.budgetItems = [...this.budgetItems, newItem];
+        // this.totalBudget += newItem.amount;
+        // this.save();
     }
 
     deleteItem(item: BudgetItem) {
-        const index = this.budgetItems.indexOf(item);
-        this.budgetItems.splice(index, 1);
-        this.totalBudget -= item.amount;
-        this.save();
+        // const index = this.budgetItems.indexOf(item);
+        // this.budgetItems.splice(index, 1);
+        // this.totalBudget -= item.amount;
+        // this.save();
     }
 
     updateItem(updateEvent: UpdateEvent) {
-        this.budgetItems[this.budgetItems.indexOf(updateEvent.old)] = updateEvent.new;
-        this.budgetItems = [...this.budgetItems];
-        this.totalBudget -= updateEvent.old.amount;
-        this.totalBudget += updateEvent.new.amount;
-        this.save();
+        // this.budgetItems[this.budgetItems.indexOf(updateEvent.old)] = updateEvent.new;
+        // this.budgetItems = [...this.budgetItems];
+        // this.totalBudget -= updateEvent.old.amount;
+        // this.totalBudget += updateEvent.new.amount;
+        // this.save();
     }
 
     save() {
@@ -72,18 +99,18 @@ export class MainPageComponent implements OnInit {
     }
 
     generatePDF() {
-        const fileName = window.prompt('Print file name');
-        const doc = new jsPDF();
-        const col = ['Date', 'Amout', 'Description'];
-        const rows = [];
-        this.budgetItems.forEach(element => {
-            const temp = [moment(element.date).format('DD.MM.YYYY'), element.amount, element.description];
-            rows.push(temp);
-        });
-        doc.autoTable(col, rows);
-        if (fileName.length) {
-            doc.save(`${fileName}.pdf`);
-        }
+        // const fileName = window.prompt('Print file name');
+        // const doc = new jsPDF();
+        // const col = ['Date', 'Amout', 'Description'];
+        // const rows = [];
+        // this.budgetItems.forEach(element => {
+        //     const temp = [moment(element.date).format('DD.MM.YYYY'), element.amount, element.description];
+        //     rows.push(temp);
+        // });
+        // doc.autoTable(col, rows);
+        // if (fileName.length) {
+        //     doc.save(`${fileName}.pdf`);
+        // }
     }
 
 }

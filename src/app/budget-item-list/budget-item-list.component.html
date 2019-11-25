@@ -4,8 +4,8 @@
         <div class="income-column column">
             <h1>Income</h1>
             <div class="budget-items">
-                <div *ngFor="let item of budgetItems | sortByDate">
-                    <app-budget-item-card *ngIf="item.amount >= 0" [budgetItem]="item">
+                <div *ngFor="let item of budgetIncomeItems | sortByDate">
+                    <app-budget-item-card [budgetItem]="item" [budgetType]="budgetType.INCOME">
                     </app-budget-item-card>
                 </div>
             </div>
@@ -14,8 +14,8 @@
         <div class="expenses-column column">
             <h1>Expenses</h1>
             <div class="budget-items">
-                <div *ngFor="let item of budgetItems | sortByDate">
-                    <app-budget-item-card *ngIf="item.amount < 0" [budgetItem]="item">
+                <div *ngFor="let item of budgeOutcometItems | sortByDate">
+                    <app-budget-item-card [budgetItem]="item" [budgetType]="budgetType.OUTCOME">
                     </app-budget-item-card>
                 </div>
             </div>

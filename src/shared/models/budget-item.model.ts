@@ -1,3 +1,8 @@
 export class BudgetItem {
-    constructor(public description: string, public amount: number, public date: Date) { }
+    constructor(public date: Date, public content: Array<TestItem>) { }
+}
+
+export interface TestItem {
+    description: string;
+    amount: number;
 }

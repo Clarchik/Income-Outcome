@@ -7,6 +7,7 @@ import { EditItemModalComponent } from '../edit-item-modal/edit-item-modal.compo
 import { BudgetService } from '../services/budget.service';
 
 import * as moment from 'moment';
+import {BUDGET_TYPE} from '../../shared/models/budget-type';
 
 @Component({
     selector: 'app-budget-item-card',
@@ -15,6 +16,7 @@ import * as moment from 'moment';
 })
 export class BudgetItemCardComponent implements OnInit {
     @Input() budgetItem: BudgetItem;
+    @Input() budgetType: BUDGET_TYPE;
 
     constructor(public dialog: MatDialog, private budgetService: BudgetService) { }
 
@@ -47,5 +49,9 @@ export class BudgetItemCardComponent implements OnInit {
 
     formatDate(date: Date) {
         return moment(date).format('DD.MM.YYYY');
+    }
+
+    get getBudgetType() {
+        return this.budgetType;
     }
 }

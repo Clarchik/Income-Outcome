@@ -1,5 +1,6 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { BudgetItem } from '../../shared/models/budget-item.model';
+import {BUDGET_TYPE} from '../../shared/models/budget-type';
 
 @Component({
     selector: 'app-budget-item-list',
@@ -10,8 +11,13 @@ import { BudgetItem } from '../../shared/models/budget-item.model';
 
 export class BudgetItemListComponent {
 
-    @Input() budgetItems: BudgetItem[];
+    @Input() budgeOutcometItems: BudgetItem[];
+    @Input() budgetIncomeItems: BudgetItem[];
 
     constructor() {}
+
+    get budgetType() {
+        return BUDGET_TYPE;
+    }
 
 }
