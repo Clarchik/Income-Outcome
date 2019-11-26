@@ -6,6 +6,7 @@ import {BUDGET_TYPE} from '../../shared/models/budget-type';
 import {BudgetContent} from '../../shared/models/budget-content';
 
 import * as moment from 'moment';
+import {BudgetStorageService} from '../services/budget-storage.service';
 
 @Component({
     selector: 'app-add-item-form',
@@ -16,7 +17,7 @@ export class AddItemFormComponent implements OnInit {
     budgetForm: FormGroup;
 
 
-    constructor(private budgetService: BudgetService, private fb: FormBuilder) {}
+    constructor(private budgetService: BudgetService, private fb: FormBuilder, private bss: BudgetStorageService) {}
 
     ngOnInit() {
         this.budgetForm = this.fb.group({
@@ -40,7 +41,12 @@ export class AddItemFormComponent implements OnInit {
         const id = this.getIdFromDate(date);
         const budgetContent = new BudgetContent(description, amount);
         const budgetItem: BudgetItem = new BudgetItem(id, type, date, [budgetContent]);
-        this.budgetService.addItem.emit(budgetItem);
+        const exist = this.bss.budgetItems.find((item) => item.id === id && item.type === type);
+        if (!exist) {
+            this.budgetService.addItem.emit(budgetItem);
+        } else {
+            console.log('exists');
+        }
         this.budgetForm.reset();
     }
 
