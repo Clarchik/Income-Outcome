@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 
 import { MatDialog } from '@angular/material';
 
-import { BudgetItem } from '../../shared/models/budget-item.model';
+import { BudgetItem } from '../../shared/models/budget-item';
 import { EditItemModalComponent } from '../edit-item-modal/edit-item-modal.component';
 import { BudgetService } from '../services/budget.service';
 
@@ -15,8 +15,8 @@ import {BUDGET_TYPE} from '../../shared/models/budget-type';
     styleUrls: ['./budget-item-card.component.scss'],
 })
 export class BudgetItemCardComponent implements OnInit {
+
     @Input() budgetItem: BudgetItem;
-    @Input() budgetType: BUDGET_TYPE;
 
     constructor(public dialog: MatDialog, private budgetService: BudgetService) { }
 
@@ -51,7 +51,7 @@ export class BudgetItemCardComponent implements OnInit {
         return moment(date).format('DD.MM.YYYY');
     }
 
-    get getBudgetType() {
-        return this.budgetType;
+    get budgetType() {
+        return this.budgetItem.type;
     }
 }

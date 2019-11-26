@@ -1,11 +1,10 @@
 <section class="budget-items-section">
     <div class="budget-items-container">
-
         <div class="income-column column">
             <h1>Income</h1>
             <div class="budget-items">
-                <div *ngFor="let item of budgetIncomeItems | sortByDate">
-                    <app-budget-item-card [budgetItem]="item" [budgetType]="budgetType.INCOME">
+                <div *ngFor="let item of income | sortByDate">
+                    <app-budget-item-card [budgetItem]="item">
                     </app-budget-item-card>
                 </div>
             </div>
@@ -14,8 +13,8 @@
         <div class="expenses-column column">
             <h1>Expenses</h1>
             <div class="budget-items">
-                <div *ngFor="let item of budgeOutcometItems | sortByDate">
-                    <app-budget-item-card [budgetItem]="item" [budgetType]="budgetType.OUTCOME">
+                <div *ngFor="let item of outcome | sortByDate">
+                    <app-budget-item-card [budgetItem]="item">
                     </app-budget-item-card>
                 </div>
             </div>

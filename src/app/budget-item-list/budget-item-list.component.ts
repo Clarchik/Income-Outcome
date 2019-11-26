@@ -1,5 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { BudgetItem } from '../../shared/models/budget-item.model';
+import { BudgetItem } from '../../shared/models/budget-item';
 import {BUDGET_TYPE} from '../../shared/models/budget-type';
 
 @Component({
@@ -11,13 +11,15 @@ import {BUDGET_TYPE} from '../../shared/models/budget-type';
 
 export class BudgetItemListComponent {
 
-    @Input() budgeOutcometItems: BudgetItem[];
-    @Input() budgetIncomeItems: BudgetItem[];
+    @Input() budgetItems: BudgetItem[];
 
     constructor() {}
 
-    get budgetType() {
-        return BUDGET_TYPE;
+    get income() {
+        return this.budgetItems.filter(item => item.type === BUDGET_TYPE.INCOME);
     }
 
+    get outcome() {
+        return this.budgetItems.filter(item => item.type === BUDGET_TYPE.OUTCOME);
+    }
 }

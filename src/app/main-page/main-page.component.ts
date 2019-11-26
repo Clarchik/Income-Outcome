@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { BudgetItem } from '../../shared/models/budget-item.model';
+import { BudgetItem } from '../../shared/models/budget-item';
 import { UpdateEvent } from '../../shared/models/update-event';
 import { BudgetService } from '../services/budget.service';
 
+import {BUDGET_TYPE} from '../../shared/models/budget-type';
 
 import * as moment from 'moment';
 import * as jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import {BudgetObject} from '../../shared/models/budget-object';
 
 @Component({
     selector: 'app-main-page',
@@ -16,72 +16,41 @@ import {BudgetObject} from '../../shared/models/budget-object';
 })
 export class MainPageComponent implements OnInit {
 
-    budgetItems: BudgetObject = new BudgetObject();
+    budgetItems: BudgetItem[] = new Array<BudgetItem>();
     totalBudget = 0;
 
     constructor(private budgetService: BudgetService) { }
 
     ngOnInit() {
-        this.budgetItems.INCOME = [
-            {
-                date: new Date(),
-                content: [
-                    {description: 'SSS', amount: +10},
-                    {description: 'RRR', amount: +20}
-                ]
-            }
-        ];
-        this.budgetItems.OUTCOME = [
-            {
-                date: new Date(),
-                content: [
-                    {description: 'DDD', amount: -10},
-                    {description: 'TTT', amount: -30}
-                ]
-            }
-        ];
-        // const localItems = localStorage.getItem('budgetItems');
-        // if (localItems) {
-        //     this.budgetItems = JSON.parse(localItems);
-        //     const budget = this.budgetItems.reduce((sum, item) => sum + item.content.amount, 0);
-        //     this.totalBudget = budget;
-        // }
-        // this.budgetService.deleteItem.subscribe(data => this.deleteItem(data));
+        this.loadLocalData();
+        this.budgetService.deleteItem.subscribe(data => this.deleteItem(data));
         // this.budgetService.updateItem.subscribe(data => this.updateItem(data));
-        // this.budgetService.addItem.subscribe(data => this.addItem(data));
+        this.budgetService.addItem.subscribe(data => this.addItem(data));
     }
 
-    get income() {
-        return this.budgetItems.INCOME;
-    }
-
-    get outcome() {
-        return this.budgetItems.OUTCOME;
-    }
 
     addItem(newItem: BudgetItem) {
-        // this.budgetItems = [...this.budgetItems, newItem];
-        // this.totalBudget += newItem.amount;
-        // this.save();
+        this.budgetItems = [...this.budgetItems, newItem];
+        this.countBudget();
+        this.save();
     }
 
     deleteItem(item: BudgetItem) {
-        // const index = this.budgetItems.indexOf(item);
-        // this.budgetItems.splice(index, 1);
-        // this.totalBudget -= item.amount;
-        // this.save();
+        const index = this.budgetItems.indexOf(item);
+        this.budgetItems.splice(index, 1);
+        this.countBudget();
+        this.save();
     }
 
     updateItem(updateEvent: UpdateEvent) {
         // this.budgetItems[this.budgetItems.indexOf(updateEvent.old)] = updateEvent.new;
         // this.budgetItems = [...this.budgetItems];
-        // this.totalBudget -= updateEvent.old.amount;
-        // this.totalBudget += updateEvent.new.amount;
-        // this.save();
+        this.countBudget();
+        this.save();
     }
 
     save() {
-        localStorage.setItem('budgetItems', JSON.stringify(this.budgetItems));
+        localStorage.setItem('budgetObject', JSON.stringify(this.budgetItems));
     }
 
     get positiveBudget(): boolean {
@@ -91,10 +60,18 @@ export class MainPageComponent implements OnInit {
     clearAllData() {
         const clear = window.prompt('All your data will be cleared forever. If you are sure please print "Delete all"');
         if (clear === 'Delete all') {
-            localStorage.removeItem('budgetItems');
+            localStorage.removeItem('budgetObject');
             setTimeout(() => {
                 window.location.reload();
-            }, 2000);
+            }, 1000);
+        }
+    }
+
+    private loadLocalData() {
+        const localItems = localStorage.getItem('budgetObject');
+        if (localItems) {
+            this.budgetItems = JSON.parse(localItems);
+            this.countBudget();
         }
     }
 
@@ -111,6 +88,13 @@ export class MainPageComponent implements OnInit {
         // if (fileName.length) {
         //     doc.save(`${fileName}.pdf`);
         // }
+    }
+
+    countBudget() {
+        const budget = this.budgetItems.map((item) => {
+            return item.content.reduce((sum, content) => sum + content.amount, 0);
+        });
+        this.totalBudget = budget.reduce((sum, item) => sum + item, 0);
     }
 
 }
