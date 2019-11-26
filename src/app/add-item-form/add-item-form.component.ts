@@ -45,7 +45,8 @@ export class AddItemFormComponent implements OnInit {
         if (!exist) {
             this.budgetService.addItem.emit(budgetItem);
         } else {
-            console.log('exists');
+            exist.content.push(budgetContent);
+            this.budgetService.updateItem.emit(exist);
         }
         this.budgetForm.reset();
     }

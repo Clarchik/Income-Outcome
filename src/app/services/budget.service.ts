@@ -7,7 +7,7 @@ import { UpdateEvent } from '../../shared/models/update-event';
 })
 export class BudgetService {
     private _deleteItem: EventEmitter<BudgetItem> = new EventEmitter<BudgetItem>();
-    private _updateItem: EventEmitter<UpdateEvent> = new EventEmitter<UpdateEvent>();
+    private _updateItem: EventEmitter<BudgetItem> = new EventEmitter<BudgetItem>();
     private _addItem: EventEmitter<BudgetItem> = new EventEmitter<BudgetItem>();
     constructor() { }
 
@@ -18,7 +18,7 @@ export class BudgetService {
         return this._deleteItem;
     }
 
-    get updateItem(): EventEmitter<UpdateEvent> {
+    get updateItem(): EventEmitter<BudgetItem> {
         return this._updateItem;
     }
 

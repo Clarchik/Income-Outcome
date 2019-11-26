@@ -17,7 +17,7 @@ export class BudgetStorageService {
     constructor(private budgetService: BudgetService) {
         this.loadLocalData();
         this.budgetService.deleteItem.subscribe(data => this.deleteItem(data));
-        // this.budgetService.updateItem.subscribe(data => this.updateItem(data));
+        this.budgetService.updateItem.subscribe(data => this.updateItem(data));
         this.budgetService.addItem.subscribe(data => this.addItem(data));
     }
 
@@ -33,9 +33,10 @@ export class BudgetStorageService {
         this.saveAndCount();
     }
 
-    updateItem(updateEvent: UpdateEvent) {
-        // this.budgetItems[this.budgetItems.indexOf(updateEvent.old)] = updateEvent.new;
-        // this.budgetItems = [...this.budgetItems];
+    updateItem(item: BudgetItem) {
+        const found = this.budgetItems.find((ref) => ref.id === item.id && ref.type === item.type);
+        this.budgetItems[this.budgetItems.indexOf(found)] = item;
+        this._budgetItems = [...this._budgetItems];
         this.saveAndCount();
     }
 
@@ -46,7 +47,6 @@ export class BudgetStorageService {
         this._totalBudget = budget.reduce((sum, item) => sum + item, 0);
         localStorage.setItem('budgetObject', JSON.stringify(this._budgetItems));
         this.$storageData.next({items: this._budgetItems, totalBudget: this._totalBudget});
-
     }
 
 

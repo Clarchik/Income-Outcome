@@ -14,10 +14,7 @@ export class EditItemModalComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public item: BudgetItem) { }
 
     ngOnInit() {
-    }
-
-    onSubmitted(updatedItem: BudgetItem) {
-        this.dialogRef.close(updatedItem);
+        console.log(this.item, 'items');
     }
 
 }
