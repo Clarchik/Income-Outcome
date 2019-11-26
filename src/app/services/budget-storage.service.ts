@@ -1,18 +1,17 @@
 import {Injectable} from '@angular/core';
 import {BudgetItem} from '../../shared/models/budget-item';
-import {UpdateEvent} from '../../shared/models/update-event';
 import {BudgetService} from './budget.service';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
+import {BudgetState, initState} from '../../shared/models/budget-state';
 
 @Injectable({
     providedIn: 'root'
 })
 export class BudgetStorageService {
     // tslint:disable-next-line:variable-name
-    private _budgetItems: BudgetItem[] = new Array<BudgetItem>();
+    private _budgetItems: BudgetState = initState;
     // tslint:disable-next-line:variable-name
-    private _totalBudget = 0;
-    private $storageData: Subject<StorageData> = new Subject<StorageData>();
+    private $storageData: Subject<BudgetState> = new Subject<BudgetState>();
 
     constructor(private budgetService: BudgetService) {
         this.loadLocalData();
@@ -23,30 +22,25 @@ export class BudgetStorageService {
 
 
     addItem(newItem: BudgetItem) {
-        this._budgetItems = [...this._budgetItems, newItem];
+        this._budgetItems = { ...this._budgetItems, [newItem.id]: newItem};
         this.saveAndCount();
     }
 
     deleteItem(item: BudgetItem) {
-        const index = this._budgetItems.indexOf(item);
-        this._budgetItems.splice(index, 1);
+        const { [item.id]: removed, ...entities } = this._budgetItems;
+        this._budgetItems = entities;
         this.saveAndCount();
     }
 
     updateItem(item: BudgetItem) {
-        const found = this.budgetItems.find((ref) => ref.id === item.id && ref.type === item.type);
-        this.budgetItems[this.budgetItems.indexOf(found)] = item;
-        this._budgetItems = [...this._budgetItems];
+        const entities = { ...this._budgetItems, [item.id] : item};
+        this._budgetItems = entities;
         this.saveAndCount();
     }
 
     public saveAndCount() {
-        const budget = this._budgetItems.map((item) => {
-            return item.content.reduce((sum, content) => sum + content.amount, 0);
-        });
-        this._totalBudget = budget.reduce((sum, item) => sum + item, 0);
         localStorage.setItem('budgetObject', JSON.stringify(this._budgetItems));
-        this.$storageData.next({items: this._budgetItems, totalBudget: this._totalBudget});
+        this.$storageData.next(this._budgetItems);
     }
 
 
@@ -68,20 +62,11 @@ export class BudgetStorageService {
         }
     }
 
-    get budgetItems(): Array<BudgetItem> {
+    get budgetItems(): BudgetState {
         return this._budgetItems;
     }
 
-    get totalBudget(): number {
-        return this._totalBudget;
-    }
-
-    get getStorageData(): Subject<StorageData> {
+    get getStorageData(): Subject<BudgetState> {
         return this.$storageData;
     }
-}
-
-export interface StorageData {
-    items: Array<BudgetItem>;
-    totalBudget: number;
 }

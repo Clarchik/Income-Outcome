@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import * as jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import {BudgetStorageService} from '../services/budget-storage.service';
+import {BudgetState} from '../../shared/models/budget-state';
 
 @Component({
     selector: 'app-main-page',
@@ -23,13 +24,10 @@ export class MainPageComponent implements OnInit {
     constructor(private bss: BudgetStorageService) { }
 
     ngOnInit() {
-       this.budgetItems = this.bss.budgetItems;
-       this.totalBudget = this.bss.totalBudget;
-
-       this.bss.getStorageData.subscribe((data) => {
-           this.budgetItems = data.items;
-           this.totalBudget = data.totalBudget;
-       });
+        this.setItemsAndTotalBudget(this.bss.budgetItems);
+        this.bss.getStorageData.subscribe((entities: BudgetState) => {
+            this.setItemsAndTotalBudget(entities);
+        });
     }
 
     get positiveBudget(): boolean {
@@ -49,6 +47,15 @@ export class MainPageComponent implements OnInit {
         // if (fileName.length) {
         //     doc.save(`${fileName}.pdf`);
         // }
+    }
+
+    setItemsAndTotalBudget(entities: BudgetState) {
+        const array = Object.keys(entities).map(id => entities[id]);
+        const budget = array.map((item) => {
+            return item.content.reduce((sum, content) => sum + content.amount, 0);
+        });
+        this.budgetItems = array;
+        this.totalBudget = budget.reduce((sum, item) => sum + item, 0);
     }
 
 }

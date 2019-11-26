@@ -41,7 +41,7 @@ export class AddItemFormComponent implements OnInit {
         const id = this.getIdFromDate(date);
         const budgetContent = new BudgetContent(description, amount);
         const budgetItem: BudgetItem = new BudgetItem(id, type, date, [budgetContent]);
-        const exist = this.bss.budgetItems.find((item) => item.id === id && item.type === type);
+        const exist = this.bss.budgetItems[id];
         if (!exist) {
             this.budgetService.addItem.emit(budgetItem);
         } else {
