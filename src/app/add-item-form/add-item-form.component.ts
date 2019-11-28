@@ -5,8 +5,8 @@ import {BudgetService} from '../services/budget.service';
 import {BUDGET_TYPE} from '../../shared/models/budget-type';
 import {BudgetContent} from '../../shared/models/budget-content';
 
-import * as moment from 'moment';
 import {BudgetStorageService} from '../services/budget-storage.service';
+import {UtilsService} from '../services/utils.service';
 
 @Component({
     selector: 'app-add-item-form',
@@ -17,7 +17,11 @@ export class AddItemFormComponent implements OnInit {
     budgetForm: FormGroup;
 
 
-    constructor(private budgetService: BudgetService, private fb: FormBuilder, private bss: BudgetStorageService) {}
+    constructor(
+        private budgetService: BudgetService,
+        private fb: FormBuilder,
+        private bss: BudgetStorageService,
+        private utilsService: UtilsService) {}
 
     ngOnInit() {
         this.budgetForm = this.fb.group({
@@ -38,7 +42,7 @@ export class AddItemFormComponent implements OnInit {
     submitForm() {
         const {date, amount, description} = this.budgetForm.value;
         const type = this.isPositiveNumber(amount) ? BUDGET_TYPE.INCOME : BUDGET_TYPE.OUTCOME;
-        const id = this.getIdFromDate(date);
+        const id = this.utilsService.getIdFromDate(date);
         const budgetContent = new BudgetContent(description, amount);
         const budgetItem: BudgetItem = new BudgetItem(id, type, date, [budgetContent]);
         const exist = this.bss.budgetItems[id];
@@ -49,10 +53,6 @@ export class AddItemFormComponent implements OnInit {
             this.budgetService.updateItem.emit({old: exist});
         }
         this.budgetForm.reset();
-    }
-
-    private getIdFromDate(date: Date) {
-        return parseInt(moment(date).format('DD.MM.YYYY').replace(/\./g, ''), 10);
     }
 
     private isPositiveNumber(amout: number): boolean {

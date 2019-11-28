@@ -1,2 +1,31 @@
 <h1 class="title">Edit</h1>
-<!-- <app-add-item-form></app-add-item-form> -->
+<form [formGroup]="budgetFormEdit">
+    <div class="field is-full">
+        <div class="column is-12">
+            <strong>Date</strong>
+            <p class="control">
+                <input type="date" placeholder="dd.mm.yyyy" formControlName="date" class="input" name="date">
+            </p>
+        </div>
+    </div>
+    <div class="field is-grouped" *ngFor="let signle of item.content; let i = index">
+        <div class="column is-6">
+            <p class="control">
+                <input type="number" formControlName="amount{{i}}" class="input" />
+            </p>
+        </div>
+        <div class="column is-6">
+            <p class="control">
+                <input type="text" formControlName="description{{i}}" class="input" autocomplete="off" />
+            </p>
+        </div>
+    </div>
+
+    <div class="field is-pulled-right">
+        <div class="column is-6">
+            <button type="submit" (click)="submitForm();" class="button is-success" [disabled]="budgetFormEdit.invalid">
+                Save
+            </button>
+        </div>
+    </div>
+</form>

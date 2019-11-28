@@ -4,6 +4,7 @@ import {BudgetService} from './budget.service';
 import {Subject} from 'rxjs';
 import {BudgetState, initState} from '../../shared/models/budget-state';
 import {UpdateBudgetObject} from '../../shared/models/update-budget';
+import {UtilsService} from './utils.service';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +15,7 @@ export class BudgetStorageService {
     // tslint:disable-next-line:variable-name
     private $storageData: Subject<BudgetState> = new Subject<BudgetState>();
 
-    constructor(private budgetService: BudgetService) {
+    constructor(private budgetService: BudgetService, private utilsService: UtilsService) {
         this.loadLocalData();
         this.budgetService.deleteItem.subscribe(data => this.deleteItem(data));
         this.budgetService.updateItem.subscribe(data => this.updateItem(data));
@@ -35,16 +36,31 @@ export class BudgetStorageService {
 
     updateItem(item: UpdateBudgetObject) {
         if (item.new) {
-            const oldItem = item.old;
-            const newItem = item.new;
-            const {[oldItem.id]: removed, ...entities} = this._budgetItems;
-            this._budgetItems = {...entities, [newItem.id]: newItem};
+            const newItemId = this.utilsService.getIdFromDate(item.new.date);
+            const oldItemId = this.utilsService.getIdFromDate(item.old.date);
+            if (newItemId === oldItemId) {
+                this._budgetItems[oldItemId] = item.new;
+            } else {
+                const withNewIdExists = this._budgetItems[newItemId];
+                if (withNewIdExists) {
+                    const oldItem = this._budgetItems[oldItemId];
+                    const newItem = this._budgetItems[newItemId];
+                    newItem.content = [...oldItem.content, ...newItem.content];
+                    const {[oldItem.id]: removed, ...entities} = this._budgetItems;
+                    this._budgetItems = { ...entities, [newItem.id]: newItem};
+                } else {
+                    const oldItem = item.old;
+                    const newItem = item.new;
+                    const {[oldItem.id]: removed, ...entities} = this._budgetItems;
+                    this._budgetItems = {...entities, [newItem.id]: newItem};
+                }
+            }
         } else {
-            const oldItem = item.old;
-            const entities = {...this._budgetItems, [oldItem.id]: oldItem};
+            const newItem = item.old;
+            const entities = {...this._budgetItems, [newItem.id]: newItem};
             this._budgetItems = entities;
-            this.saveAndCount();
         }
+        this.saveAndCount();
     }
 
     public saveAndCount() {
