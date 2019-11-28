@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { BudgetItem } from '../../shared/models/budget-item';
-import { UpdateEvent } from '../../shared/models/update-event';
 import { BudgetService } from '../services/budget.service';
 
-import {BUDGET_TYPE} from '../../shared/models/budget-type';
+import { BUDGET_TYPE } from '../../shared/models/budget-type';
 
 import * as moment from 'moment';
 import * as jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import {BudgetStorageService} from '../services/budget-storage.service';
-import {BudgetState} from '../../shared/models/budget-state';
+import { BudgetStorageService } from '../services/budget-storage.service';
+import { BudgetState } from '../../shared/models/budget-state';
 
 @Component({
     selector: 'app-main-page',
