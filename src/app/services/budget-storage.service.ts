@@ -35,29 +35,26 @@ export class BudgetStorageService {
     }
 
     updateItem(item: UpdateBudgetObject) {
+        const newItemId = this.utilsService.getIdFromDate(item.new.date);
+        const oldItemId = this.utilsService.getIdFromDate(item.old.date);
         if (item.new) {
-            const newItemId = this.utilsService.getIdFromDate(item.new.date);
-            const oldItemId = this.utilsService.getIdFromDate(item.old.date);
             if (newItemId === oldItemId) {
                 this._budgetItems[oldItemId] = item.new;
             } else {
-                const withNewIdExists = this._budgetItems[newItemId];
-                if (withNewIdExists) {
+                const itemWithNewId = this._budgetItems[newItemId];
+                if (itemWithNewId) {
                     const oldItem = this._budgetItems[oldItemId];
                     const newItem = this._budgetItems[newItemId];
                     newItem.content = [...oldItem.content, ...newItem.content];
                     const {[oldItem.id]: removed, ...entities} = this._budgetItems;
-                    this._budgetItems = { ...entities, [newItem.id]: newItem};
-                } else {
-                    const oldItem = item.old;
-                    const newItem = item.new;
-                    const {[oldItem.id]: removed, ...entities} = this._budgetItems;
                     this._budgetItems = {...entities, [newItem.id]: newItem};
+                } else {
+                    const {[item.old.id]: removed, ...entities} = this._budgetItems;
+                    this._budgetItems = {...entities, [item.new.id]: item.new};
                 }
             }
         } else {
-            const newItem = item.old;
-            const entities = {...this._budgetItems, [newItem.id]: newItem};
+            const entities = {...this._budgetItems, [item.old.id]: item.old};
             this._budgetItems = entities;
         }
         this.saveAndCount();
