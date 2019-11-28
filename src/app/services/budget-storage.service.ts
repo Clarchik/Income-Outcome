@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {BudgetItem} from '../../shared/models/budget-item';
-import {BudgetService} from './budget.service';
-import {Subject} from 'rxjs';
-import {BudgetState, initState} from '../../shared/models/budget-state';
-import {UpdateBudgetObject} from '../../shared/models/update-budget';
-import {UtilsService} from './utils.service';
+import { Injectable } from '@angular/core';
+import { BudgetItem } from '../../shared/models/budget-item';
+import { BudgetService } from './budget.service';
+import { Subject } from 'rxjs';
+import { BudgetState, initState } from '../../shared/models/budget-state';
+import { UpdateBudgetObject } from '../../shared/models/update-budget';
+import { UtilsService } from './utils.service';
 
 @Injectable({
     providedIn: 'root'
@@ -24,20 +24,20 @@ export class BudgetStorageService {
 
 
     addItem(newItem: BudgetItem) {
-        this._budgetItems = {...this._budgetItems, [newItem.id]: newItem};
+        this._budgetItems = { ...this._budgetItems, [newItem.id]: newItem };
         this.saveAndCount();
     }
 
     deleteItem(item: BudgetItem) {
-        const {[item.id]: removed, ...entities} = this._budgetItems;
+        const { [item.id]: removed, ...entities } = this._budgetItems;
         this._budgetItems = entities;
         this.saveAndCount();
     }
 
     updateItem(item: UpdateBudgetObject) {
-        const newItemId = this.utilsService.getIdFromDate(item.new.date);
-        const oldItemId = this.utilsService.getIdFromDate(item.old.date);
         if (item.new) {
+            const oldItemId = this.utilsService.generateIdFromDateAndType(item.old.date, item.new.type);
+            const newItemId = this.utilsService.generateIdFromDateAndType(item.new.date, item.new.type);
             if (newItemId === oldItemId) {
                 this._budgetItems[oldItemId] = item.new;
             } else {
@@ -46,15 +46,15 @@ export class BudgetStorageService {
                     const oldItem = this._budgetItems[oldItemId];
                     const newItem = this._budgetItems[newItemId];
                     newItem.content = [...oldItem.content, ...newItem.content];
-                    const {[oldItem.id]: removed, ...entities} = this._budgetItems;
-                    this._budgetItems = {...entities, [newItem.id]: newItem};
+                    const { [oldItem.id]: removed, ...entities } = this._budgetItems;
+                    this._budgetItems = { ...entities, [newItem.id]: newItem };
                 } else {
-                    const {[item.old.id]: removed, ...entities} = this._budgetItems;
-                    this._budgetItems = {...entities, [item.new.id]: item.new};
+                    const { [item.old.id]: removed, ...entities } = this._budgetItems;
+                    this._budgetItems = { ...entities, [item.new.id]: item.new };
                 }
             }
         } else {
-            const entities = {...this._budgetItems, [item.old.id]: item.old};
+            const entities = { ...this._budgetItems, [item.old.id]: item.old };
             this._budgetItems = entities;
         }
         this.saveAndCount();

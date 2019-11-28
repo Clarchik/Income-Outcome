@@ -1,12 +1,12 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BudgetItem } from '../../shared/models/budget-item';
-import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
-import {BUDGET_TYPE} from '../../shared/models/budget-type';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { BUDGET_TYPE } from '../../shared/models/budget-type';
 
 import * as moment from 'moment';
-import {BudgetContent} from '../../shared/models/budget-content';
-import {UtilsService} from '../services/utils.service';
+import { BudgetContent } from '../../shared/models/budget-content';
+import { UtilsService } from '../services/utils.service';
 
 @Component({
     selector: 'app-edit-item-modal',
@@ -37,9 +37,9 @@ export class EditItemModalComponent implements OnInit {
     }
 
     submitForm() {
-        const {date} = this.budgetFormEdit.value;
+        const { date } = this.budgetFormEdit.value;
         const type = this.item.type;
-        const id = this.utilsService.getIdFromDate(date);
+        const id = this.utilsService.generateIdFromDateAndType(date, type);
         const content: Array<BudgetContent> = Array<BudgetContent>();
         this.item.content.forEach((single) => {
             const index = this.item.content.indexOf(single);

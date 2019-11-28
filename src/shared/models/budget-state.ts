@@ -1,8 +1,8 @@
-import {BudgetItem} from './budget-item';
+import { BudgetItem } from './budget-item';
 
 export interface BudgetState {
-    [id: number]: BudgetItem;
+    [id: string]: BudgetItem;
 }
 
 
-export const initState: BudgetState = { };
+export const initState: BudgetState = {};

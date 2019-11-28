@@ -1,12 +1,12 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {NgForm, FormGroup, FormBuilder, Validators} from '@angular/forms';
-import {BudgetItem} from '../../shared/models/budget-item';
-import {BudgetService} from '../services/budget.service';
-import {BUDGET_TYPE} from '../../shared/models/budget-type';
-import {BudgetContent} from '../../shared/models/budget-content';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { BudgetItem } from '../../shared/models/budget-item';
+import { BudgetService } from '../services/budget.service';
+import { BUDGET_TYPE } from '../../shared/models/budget-type';
+import { BudgetContent } from '../../shared/models/budget-content';
 
-import {BudgetStorageService} from '../services/budget-storage.service';
-import {UtilsService} from '../services/utils.service';
+import { BudgetStorageService } from '../services/budget-storage.service';
+import { UtilsService } from '../services/utils.service';
 
 @Component({
     selector: 'app-add-item-form',
@@ -21,7 +21,7 @@ export class AddItemFormComponent implements OnInit {
         private budgetService: BudgetService,
         private fb: FormBuilder,
         private bss: BudgetStorageService,
-        private utilsService: UtilsService) {}
+        private utilsService: UtilsService) { }
 
     ngOnInit() {
         this.budgetForm = this.fb.group({
@@ -40,9 +40,9 @@ export class AddItemFormComponent implements OnInit {
     }
 
     submitForm() {
-        const {date, amount, description} = this.budgetForm.value;
+        const { date, amount, description } = this.budgetForm.value;
         const type = this.isPositiveNumber(amount) ? BUDGET_TYPE.INCOME : BUDGET_TYPE.OUTCOME;
-        const id = this.utilsService.getIdFromDate(date);
+        const id = this.utilsService.generateIdFromDateAndType(date, type);
         const budgetContent = new BudgetContent(description, amount);
         const budgetItem: BudgetItem = new BudgetItem(id, type, date, [budgetContent]);
         const exist = this.bss.budgetItems[id];
@@ -50,7 +50,7 @@ export class AddItemFormComponent implements OnInit {
             this.budgetService.addItem.emit(budgetItem);
         } else {
             exist.content.push(budgetContent);
-            this.budgetService.updateItem.emit({old: exist});
+            this.budgetService.updateItem.emit({ old: exist });
         }
         this.budgetForm.reset();
     }
