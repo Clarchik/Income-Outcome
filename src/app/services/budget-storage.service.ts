@@ -3,6 +3,7 @@ import {BudgetItem} from '../../shared/models/budget-item';
 import {BudgetService} from './budget.service';
 import {Subject} from 'rxjs';
 import {BudgetState, initState} from '../../shared/models/budget-state';
+import {UpdateBudgetObject} from '../../shared/models/update-budget';
 
 @Injectable({
     providedIn: 'root'
@@ -22,20 +23,28 @@ export class BudgetStorageService {
 
 
     addItem(newItem: BudgetItem) {
-        this._budgetItems = { ...this._budgetItems, [newItem.id]: newItem};
+        this._budgetItems = {...this._budgetItems, [newItem.id]: newItem};
         this.saveAndCount();
     }
 
     deleteItem(item: BudgetItem) {
-        const { [item.id]: removed, ...entities } = this._budgetItems;
+        const {[item.id]: removed, ...entities} = this._budgetItems;
         this._budgetItems = entities;
         this.saveAndCount();
     }
 
-    updateItem(item: BudgetItem) {
-        const entities = { ...this._budgetItems, [item.id] : item};
-        this._budgetItems = entities;
-        this.saveAndCount();
+    updateItem(item: UpdateBudgetObject) {
+        if (item.new) {
+            const oldItem = item.old;
+            const newItem = item.new;
+            const {[oldItem.id]: removed, ...entities} = this._budgetItems;
+            this._budgetItems = {...entities, [newItem.id]: newItem};
+        } else {
+            const oldItem = item.old;
+            const entities = {...this._budgetItems, [oldItem.id]: oldItem};
+            this._budgetItems = entities;
+            this.saveAndCount();
+        }
     }
 
     public saveAndCount() {

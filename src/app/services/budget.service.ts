@@ -1,13 +1,14 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { BudgetItem } from '../../shared/models/budget-item';
 import { UpdateEvent } from '../../shared/models/update-event';
+import {UpdateBudgetObject} from '../../shared/models/update-budget';
 
 @Injectable({
     providedIn: 'root'
 })
 export class BudgetService {
     private _deleteItem: EventEmitter<BudgetItem> = new EventEmitter<BudgetItem>();
-    private _updateItem: EventEmitter<BudgetItem> = new EventEmitter<BudgetItem>();
+    private _updateItem: EventEmitter<UpdateBudgetObject> = new EventEmitter<UpdateBudgetObject>();
     private _addItem: EventEmitter<BudgetItem> = new EventEmitter<BudgetItem>();
     constructor() { }
 
@@ -18,7 +19,7 @@ export class BudgetService {
         return this._deleteItem;
     }
 
-    get updateItem(): EventEmitter<BudgetItem> {
+    get updateItem(): EventEmitter<UpdateBudgetObject> {
         return this._updateItem;
     }
 
