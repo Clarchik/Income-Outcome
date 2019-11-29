@@ -1,11 +1,11 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { BudgetItem } from '../../shared/models/budget-item';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { BUDGET_TYPE } from '../../shared/models/budget-type';
+import {Component, OnInit, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {BudgetItem} from '../../shared/models/budget-item';
+import {FormGroup, FormBuilder, Validators, FormArray} from '@angular/forms';
+import {BUDGET_TYPE} from '../../shared/models/budget-type';
 
-import { BudgetContent } from '../../shared/models/budget-content';
-import { UtilsService } from '../services/utils.service';
+import {BudgetContent} from '../../shared/models/budget-content';
+import {UtilsService} from '../services/utils.service';
 
 @Component({
     selector: 'app-edit-item-modal',
@@ -13,7 +13,8 @@ import { UtilsService } from '../services/utils.service';
     styleUrls: ['./edit-item-modal.component.scss']
 })
 export class EditItemModalComponent implements OnInit {
-    budgetFormEdit: FormGroup;
+    public budgetFormEdit: FormGroup;
+    private _budgetItem: BudgetItem;
     constructor(
         public dialogRef: MatDialogRef<EditItemModalComponent>,
         @Inject(MAT_DIALOG_DATA) public item: BudgetItem,
@@ -22,51 +23,57 @@ export class EditItemModalComponent implements OnInit {
 
     ngOnInit() {
         this.budgetFormEdit = this.fb.group({
-            date: [this.item.date, Validators.required]
+            date: [this.item.date, Validators.required],
+            content: new FormArray([])
         });
-        this.refreshControls(this.budgetItem);
+        this.initContentControls();
     }
 
-    submitForm() {
-        const { date } = this.budgetFormEdit.value;
+    public submitForm() {
+        const {date} = this.budgetFormEdit.value;
         const type = this.item.type;
         const id = this.utilsService.generateIdFromDateAndType(date, type);
-        const content: Array<BudgetContent> = Array<BudgetContent>();
-        this.item.content.forEach((single) => {
-            const index = this.item.content.indexOf(single);
-            const amount = this.budgetFormEdit.value[`amount${index}`];
-            const description = this.budgetFormEdit.value[`description${index}`];
-            const newContent = new BudgetContent(description, amount);
-            content.push(newContent);
+        const contentArray: Array<BudgetContent> = Array<BudgetContent>();
+        this.formContent.controls.forEach((single) => {
+            const {amount, description} = single.value;
+            const content = new BudgetContent(description, amount);
+            contentArray.push(content);
         });
-        const newItem = new BudgetItem(id, type, date, content);
+        const newItem = new BudgetItem(id, type, date, contentArray);
         this.dialogRef.close(newItem);
     }
 
-    addRow() {
-        this.budgetItem.content.push(new BudgetContent());
-        this.refreshControls(this.budgetItem);
+    public addRow() {
+        this.addContentRowToForm();
     }
 
-    deleteRow(index) {
-        this.budgetItem.content.splice(index, 1);
-        this.refreshControls(this.budgetItem);
+    public deleteRow(index) {
+        this.formContent.removeAt(index);
     }
 
-    refreshControls(item: BudgetItem) {
-        item.content.forEach((single) => {
-            const index = this.item.content.indexOf(single);
-            const validator = this.item.type === BUDGET_TYPE.INCOME ? Validators.min(0) : Validators.max(0);
-            this.budgetFormEdit.addControl(`amount${index}`, new FormControl(single.amount, [Validators.required, validator]));
-            this.budgetFormEdit.addControl(`description${index}`, new FormControl(single.description, Validators.required));
+    private initContentControls() {
+        this.budgetItem.content.forEach((single) => {
+            this.addContentRowToForm(single);
         });
     }
 
-    get lowContent(): boolean {
-        return this.budgetItem.content.length <= 1;
+    private addContentRowToForm(item: BudgetContent = null) {
+        const validator = this.item.type === BUDGET_TYPE.INCOME ? Validators.min(0) : Validators.max(0);
+        this.formContent.push(this.fb.group({
+            amount: [item ? item.amount : null, [Validators.required, validator]],
+            description: [item ? item.description : null, [Validators.required]]
+        }));
     }
 
-    get budgetItem() {
+    get lowContent(): boolean {
+        return this.formContent.controls.length <= 1;
+    }
+
+    get budgetItem(): BudgetItem {
         return this.item;
+    }
+
+    get formContent(): FormArray {
+        return this.budgetFormEdit.controls.content as FormArray;
     }
 }
