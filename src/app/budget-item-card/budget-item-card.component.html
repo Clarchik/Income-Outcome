@@ -1,18 +1,18 @@
 <div class="root">
     <div class="budget-item" (click)="onItemClick(budgetItem)"
-        [ngClass]="{ 'income': budgetItem.amount >=0, 'expense': budgetItem.amount < 0 }">
+        [ngClass]="{ 'income': budgetType === 'INCOME', 'expense': budgetType === 'OUTCOME' }">
         <div class="date">
             <strong>
                 <span class="day-name">{{ getDayByDate(budgetItem.date) }}</span>
                 <span class="day-date"> ({{ formatDate(budgetItem.date) }})</span>
             </strong>
         </div>
-        <div class="description-wrapper">
+        <div class="description-wrapper" *ngFor="let item of budgetItem.content">
             <div class="description">
-                <p>{{ budgetItem.description }}</p>
+                <p>{{ item.description }}</p>
             </div>
             <div class="amount">
-                <p>{{ budgetItem.amount }}</p>
+                <p>{{ item.amount }}</p>
             </div>
         </div>
     </div>

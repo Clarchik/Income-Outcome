@@ -23,9 +23,8 @@
         background-image: url('../../assets/delete_icon.svg');
         background-repeat: no-repeat;
         background-position: center;
-        right: -10px; // this has to be half of the width
-        top: -14px; // this has to be half of the height
-
+        right: -10px;
+        top: -14px;
         transition: opacity 0.2s ease-out, transform 0.2s ease-out;
 
         transform: scale(0);
@@ -63,6 +62,7 @@
 
     .description-wrapper {
         display: flex;
+        margin-bottom: 10px;
     }
 
     .date {
@@ -73,7 +73,6 @@
         display: flex;
         flex-grow: 1;
         font-size: 18px;
-        // Vertically center the children elements
         align-items: center;
         word-break: break-all;
     }

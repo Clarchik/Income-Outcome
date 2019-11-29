@@ -1,2 +1,48 @@
 <h1 class="title">Edit</h1>
-<app-add-item-form [budgetItem]="item" (formSubmit)="onSubmitted($event)"></app-add-item-form>
+<form [formGroup]="budgetFormEdit">
+    <div class="field is-full">
+        <div class="column is-12">
+            <strong>Date</strong>
+            <p class="control">
+                <input type="date" placeholder="dd.mm.yyyy" formControlName="date" class="input" name="date">
+            </p>
+        </div>
+    </div>
+    <div class="content">
+        <div class="field is-grouped" [formGroup]="content" *ngFor="let content of formContent.controls; let i = index">
+            <div class="column is-5">
+                <p class="control">
+                    <input type="number" formControlName="amount" class="input" />
+                </p>
+            </div>
+            <div class="column is-5">
+                <p class="control">
+                    <input type="text" formControlName="description" class="input" autocomplete="off" />
+                </p>
+            </div>
+            <div class="column is-2">
+                <button class="button is-danger is-outlined" (click)="deleteRow(i);" style="max-width: 100%;"
+                    [disabled]="lowContent">
+                    <span>Delete</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="field is-pulled-right">
+        <div class="column is-6">
+            <button type="submit" (click)="submitForm();" class="button is-success" [disabled]="budgetFormEdit.invalid">
+                Save
+            </button>
+        </div>
+    </div>
+
+    <div class="field is-pulled-right">
+        <div class="column is-6">
+            <button type="submit" (click)="addRow();" class="button is-info">
+                Add row
+            </button>
+        </div>
+    </div>
+
+</form>

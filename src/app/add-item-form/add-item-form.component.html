@@ -1,36 +1,32 @@
 <div class="column">
-    <form #itemForm="ngForm" (ngSubmit)="onSubmit(itemForm)">
+    <form [formGroup]="budgetForm">
         <div class="field is-horizontal">
             <div class="field-body">
                 <div class="field">
                     <p class="control">
-                        <input type="date" placeholder="dd.mm.yyyy" [ngModel]="budgetItem.date" class="input"
-                            name="date" required>
+                        <input type="date" placeholder="dd.mm.yyyy" formControlName="date" class="input" name="date">
                     </p>
                 </div>
 
                 <div class="field is-narrow">
                     <p class="control">
-                        <input type="number" required name="amount" class="input" placeholder="Amount"
-                            [ngModel]="budgetItem.amount">
+                        <input type="number" formControlName="amount" name="amount" class="input" placeholder="Amount">
                     </p>
                 </div>
 
                 <div class="field is-narrow">
                     <p class="control">
-                        <input type="text" autocomplete="off" required name="description" class="input"
-                            placeholder="Description" [ngModel]="budgetItem.description">
+                        <input type="text" formControlName="description" autocomplete="off" name="description"
+                            class="input" placeholder="Description">
                     </p>
                 </div>
 
                 <div class="field is-narrow">
-                    <button type="submit" class="button"
-                        [ngClass]="{ 'is-primary': isNewItem, 'is-success': !isNewItem }" [disabled]="!itemForm.valid">
-                        <p *ngIf="isNewItem">Add</p>
-                        <p *ngIf="!isNewItem">Save</p>
+                    <button type="submit" (click)="submitForm();" class="button is-success"
+                        [disabled]="!budgetForm.valid">
+                        Add
                     </button>
                 </div>
-
             </div>
         </div>
     </form>
