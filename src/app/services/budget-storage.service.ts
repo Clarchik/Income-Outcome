@@ -10,9 +10,7 @@ import { UtilsService } from './utils.service';
     providedIn: 'root'
 })
 export class BudgetStorageService {
-    // tslint:disable-next-line:variable-name
     private _budgetItems: BudgetState = initState;
-    // tslint:disable-next-line:variable-name
     private $storageData: Subject<BudgetState> = new Subject<BudgetState>();
 
     constructor(private budgetService: BudgetService, private utilsService: UtilsService) {

@@ -4,7 +4,6 @@ import { BudgetItem } from '../../shared/models/budget-item';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { BUDGET_TYPE } from '../../shared/models/budget-type';
 
-import * as moment from 'moment';
 import { BudgetContent } from '../../shared/models/budget-content';
 import { UtilsService } from '../services/utils.service';
 
@@ -25,15 +24,7 @@ export class EditItemModalComponent implements OnInit {
         this.budgetFormEdit = this.fb.group({
             date: [this.item.date, Validators.required]
         });
-        this.item.content.forEach((single) => {
-            const index = this.item.content.indexOf(single);
-            const validator = this.item.type === BUDGET_TYPE.INCOME ? Validators.min(0) : Validators.max(0);
-            this.budgetFormEdit.addControl(`amount${index}`, new FormControl(single.amount, [
-                Validators.required,
-                validator
-            ]));
-            this.budgetFormEdit.addControl(`description${index}`, new FormControl(single.description, Validators.required));
-        });
+        this.refreshControls(this.budgetItem);
     }
 
     submitForm() {
@@ -52,4 +43,30 @@ export class EditItemModalComponent implements OnInit {
         this.dialogRef.close(newItem);
     }
 
+    addRow() {
+        this.budgetItem.content.push(new BudgetContent());
+        this.refreshControls(this.budgetItem);
+    }
+
+    deleteRow(index) {
+        this.budgetItem.content.splice(index, 1);
+        this.refreshControls(this.budgetItem);
+    }
+
+    refreshControls(item: BudgetItem) {
+        item.content.forEach((single) => {
+            const index = this.item.content.indexOf(single);
+            const validator = this.item.type === BUDGET_TYPE.INCOME ? Validators.min(0) : Validators.max(0);
+            this.budgetFormEdit.addControl(`amount${index}`, new FormControl(single.amount, [Validators.required, validator]));
+            this.budgetFormEdit.addControl(`description${index}`, new FormControl(single.description, Validators.required));
+        });
+    }
+
+    get lowContent(): boolean {
+        return this.budgetItem.content.length <= 1;
+    }
+
+    get budgetItem() {
+        return this.item;
+    }
 }

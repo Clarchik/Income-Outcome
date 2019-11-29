@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { BudgetItem } from '../../shared/models/budget-item';
 import { BudgetService } from '../services/budget.service';
@@ -45,12 +45,12 @@ export class AddItemFormComponent implements OnInit {
         const id = this.utilsService.generateIdFromDateAndType(date, type);
         const budgetContent = new BudgetContent(description, amount);
         const budgetItem: BudgetItem = new BudgetItem(id, type, date, [budgetContent]);
-        const exist = this.bss.budgetItems[id];
-        if (!exist) {
+        const foundItem = this.bss.budgetItems[id];
+        if (!foundItem) {
             this.budgetService.addItem.emit(budgetItem);
         } else {
-            exist.content.push(budgetContent);
-            this.budgetService.updateItem.emit({ old: exist });
+            foundItem.content.push(budgetContent);
+            this.budgetService.updateItem.emit({ old: foundItem });
         }
         this.budgetForm.reset();
     }
