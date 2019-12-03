@@ -34,18 +34,41 @@ export class MainPageComponent implements OnInit {
     }
 
     generatePDF() {
-        // const fileName = window.prompt('Print file name');
-        // const doc = new jsPDF();
-        // const col = ['Date', 'Amout', 'Description'];
-        // const rows = [];
-        // this.budgetItems.forEach(element => {
-        //     const temp = [moment(element.date).format('DD.MM.YYYY'), element.amount, element.description];
-        //     rows.push(temp);
-        // });
-        // doc.autoTable(col, rows);
-        // if (fileName.length) {
-        //     doc.save(`${fileName}.pdf`);
-        // }
+        const fileName = window.prompt('Print file name');
+        const doc = new jsPDF();
+        const col = ['Date', 'Description', 'Amount'];
+        const rows = [];
+        const items = this.budgetItems.sort((a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf());
+        items.forEach(element => {
+            element.type === BUDGET_TYPE.INCOME ? doc.setFillColor('green') : doc.setFillColor('red');
+            const tempAmount = [];
+            const tempDescription = [];
+            element.content.forEach(item => {
+                tempAmount.push(item.amount);
+                tempDescription.push(item.description);
+            });
+            const temp = [
+                moment(element.date).format('DD.MM.YYYY'),
+                tempDescription.join('\r'),
+                tempAmount.join('\r'),
+                element.type];
+            rows.push(temp);
+        });
+        doc.autoTable(col, rows, {
+            didParseCell: function(data) {
+                if (data.section !== 'head') {
+                    if (data.row.raw[3] === BUDGET_TYPE.INCOME) {
+                        data.cell.styles.fillColor = [0, 204, 134];
+                    } else {
+                        data.cell.styles.fillColor = [220, 57, 0];
+                    }
+                    data.cell.styles.textColor = [255, 255, 255];
+                }
+            },
+        });
+        if (fileName.length) {
+            doc.save(`${fileName}.pdf`);
+        }
     }
 
     setItemsAndTotalBudget(entities: BudgetState) {
