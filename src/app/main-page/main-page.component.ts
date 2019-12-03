@@ -80,4 +80,14 @@ export class MainPageComponent implements OnInit {
         this.totalBudget = budget.reduce((sum, item) => sum + item, 0);
     }
 
+    clearAllData() {
+        const confirm = window.prompt('All data will be lost forever. If you are sure, print <Delete All>');
+        if (confirm === 'Delete All') {
+            localStorage.removeItem('budgetObject');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
+    }
+
 }
