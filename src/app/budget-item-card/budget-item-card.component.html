@@ -1,13 +1,13 @@
-<div class="root">
+<div class="root" [ngClass]="{'mini': !budgetItem.expanded}">
     <div class="budget-item" (click)="onItemClick(budgetItem)"
-        [ngClass]="{ 'income': budgetType === 'INCOME', 'expense': budgetType === 'OUTCOME' }">
+        [ngClass]="{ 'income': budgetType === 'INCOME', 'expense': budgetType === 'OUTCOME'}">
         <div class="date">
             <strong>
                 <span class="day-name">{{ getDayByDate(budgetItem.date) }}</span>
                 <span class="day-date"> ({{ formatDate(budgetItem.date) }})</span>
             </strong>
         </div>
-        <div class="description-wrapper" *ngFor="let item of budgetItem.content">
+        <div [ngClass]="{'mini': !budgetItem.expanded}" class="description-wrapper" *ngFor="let item of budgetItem.content">
             <div class="description">
                 <p>{{ item.description }}</p>
             </div>
@@ -15,7 +15,10 @@
                 <p>{{ item.amount }}</p>
             </div>
         </div>
+
     </div>
 
     <div class="x-icon-button" (click)="deleteButtonClick(budgetItem)"></div>
+    <div class="toggle-button" [ngClass]="{'up': budgetItem.expanded, 'down': !budgetItem.expanded}"
+        (click)="toggleButtonClick(budgetItem)"></div>
 </div>

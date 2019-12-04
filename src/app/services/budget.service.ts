@@ -9,6 +9,7 @@ export class BudgetService {
     private _deleteItem: EventEmitter<BudgetItem> = new EventEmitter<BudgetItem>();
     private _updateItem: EventEmitter<UpdateBudgetObject> = new EventEmitter<UpdateBudgetObject>();
     private _addItem: EventEmitter<BudgetItem> = new EventEmitter<BudgetItem>();
+    private _toggleItem: EventEmitter<BudgetItem> = new EventEmitter<BudgetItem>();
     constructor() { }
 
 
@@ -24,5 +25,9 @@ export class BudgetService {
 
     get addItem(): EventEmitter<BudgetItem> {
         return this._addItem;
+    }
+
+    get toggleItem(): EventEmitter<BudgetItem> {
+        return this._toggleItem;
     }
 }

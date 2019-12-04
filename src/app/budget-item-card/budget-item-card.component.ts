@@ -23,6 +23,11 @@ export class BudgetItemCardComponent implements OnInit {
     ngOnInit() {
     }
 
+    toggleButtonClick(item: BudgetItem) {
+        item.expanded = !item.expanded;
+        this.budgetService.updateItem.emit({old: item});
+    }
+
     deleteButtonClick(item: BudgetItem) {
         this.budgetService.deleteItem.emit(item);
     }
